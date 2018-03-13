@@ -83,13 +83,10 @@ def _play_mp3(mp3_url):
 
 
 def _clean_cache():
-    critical_time = arrow.now().shift(hours=+5).shift(days=-7)
+    critical_time = arrow.now().shift(days=-7)
     for item in Path('./static/cache/').glob('*.mp3'):
         if item.is_file():
-            print(str(item.absolute()))
-            item_time = arrow.get(item.stat().st_mtime)
-            print(item_time)
-            if item_time < critical_time:
+            if arrow.get(item.stat().st_mtime) < critical_time:
                 print("là")
 
 
