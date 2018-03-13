@@ -6,11 +6,14 @@ from urllib.parse import urlparse
 
 import pychromecast
 from flask import Flask, request, abort
+from flask_cors import CORS
 from gtts import gTTS
 from slugify import slugify
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_pyfile('app_config.py')
+
 logging.info("Starting up chromecasts")
 chromecasts = pychromecast.get_chromecasts()
 cast = next(cc for cc in chromecasts if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME"))
