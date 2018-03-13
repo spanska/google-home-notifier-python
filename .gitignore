@@ -1,3 +1,6 @@
-node_modules
-npm-debug.log
 static/*.mp3
+
+.idea/google-home-notifier-python.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
