@@ -14,9 +14,10 @@ app = Flask(__name__)
 CORS(app)
 app.config.from_pyfile('app_config.py')
 
-logging.info("Starting up chromecasts")
-chromecasts = pychromecast.get_chromecasts()
-cast = next(cc for cc in chromecasts if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME"))
+logging.info("Finding ChromeCast")
+chromecast = next(
+    cc for cc in pychromecast.get_chromecasts() if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME")
+)
 
 
 @app.route('/play/<filename>')
@@ -66,10 +67,8 @@ def _play_tts(text, lang='fr', slow=False):
 
 
 def _play_mp3(mp3_url):
-    print(mp3_url)
-    cast.wait()
-    mc = cast.media_controller
-    mc.play_media(mp3_url, 'audio/mp3')
+    chromecast.wait()
+    chromecast.media_controller.play_media(mp3_url, 'audio/mp3')
 
 
 if __name__ == '__main__':
