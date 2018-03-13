@@ -9,7 +9,7 @@ The gist is this:
 This is a webservice that has two endpoints:
 
 - /play/ - plays an mp3 on the google home that is in the static folder
-- /say/ - uses googles unofficial google translate TTS service to say a notification
+- /say - uses googles unofficial google translate TTS service to say a notification
 
 # use
 
@@ -25,9 +25,9 @@ You will have to edit `main.py` and change the `device_name` to one of your goog
 
 This will play mp3name.mp3 over the google homes. I put two mp3s in the static dir for you to try out: JR.mp3 and doorbell1.mp3. Try them: `/play/JR.mp3` or `/play/doorbell1.mp3`
 
-`/say/?text=Oh My God this is awesome`
+`/say?text=Oh My God this is awesome`
 
-Just pass a GET variable to the `/say/` endpoint and the google homes will say your text. It also caches this so that the second time it will be a bit quicker than the first time. yay. 
+Just pass a GET variable to the `/say` endpoint and the google homes will say your text. It also caches this so that the second time it will be a bit quicker than the first time. yay. 
 
 You can also do other languages too: 
 
