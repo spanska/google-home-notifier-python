@@ -5,12 +5,15 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import pychromecast
-from flask import Flask, request, abort
+from flask import request, abort
+from flask_api import FlaskAPI
 from flask_cors import CORS
 from gtts import gTTS
 from slugify import slugify
 
-app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+
+app = FlaskAPI(__name__)
 CORS(app)
 app.config.from_pyfile('app_config.py')
 
@@ -72,5 +75,4 @@ def _play_mp3(mp3_url):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
     app.run(host='0.0.0.0', port=5000, debug=app.config.get("DEBUG"))
