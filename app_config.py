@@ -2,8 +2,7 @@
 
 # Flask Parameters
 DEBUG = True
+API_SECRET = ""
 
 # casting Parameters
-API_SECRET = "qq"
-
-CHROMECAST_FRIENDLY_NAME = "Home group"
+CHROMECAST_FRIENDLY_NAME = ""

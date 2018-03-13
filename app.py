@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 import logging
+from functools import wraps, update_wrapper
 from pathlib import Path
 from urllib.parse import urlparse
 
 import pychromecast
-from flask import request, abort
-from flask_api import FlaskAPI
+from flask import request, abort, make_response
+from flask_api import FlaskAPI, status
 from flask_cors import CORS
 from gtts import gTTS
 from slugify import slugify
+from webargs import fields
+from webargs.flaskparser import use_args
 
 logging.basicConfig(level=logging.INFO)
 
@@ -19,38 +22,44 @@ app.config.from_pyfile('app_config.py')
 
 logging.info("Finding ChromeCast")
 chromecast = next(
-    cc for cc in pychromecast.get_chromecasts() if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME")
+    cc for cc in pychromecast.get_chromecasts()
+    if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME")
 )
 
 
-@app.route('/play/<filename>')
+def check_secret(view):
+    @wraps(view)
+    def inner_check_secret(*args, **kwargs):
+        if request.args.get("secret") != app.config.get("API_SECRET"):
+            abort(401)
+        else:
+            response = make_response(view(*args, **kwargs))
+            return response
+
+    return update_wrapper(inner_check_secret, view)
+
+
+@app.route('/play/<filename>', methods=['GET'])
+@app.route('/d/<msg_id>/<filename>')
+@check_secret
 def play(filename):
-    _check_secret()
-    urlparts = urlparse(request.url)
     mp3 = Path("./static/" + filename)
     if mp3.is_file():
-        _play_mp3("http://" + urlparts.netloc + "/static/" + filename)
-        return filename
+        _play_mp3("http://" + urlparse(request.url).netloc + "/static/" + filename)
+        return {}, status.HTTP_204_NO_CONTENT
     else:
-        return "False"
+        return {"error": "%s is not a file" % mp3.absolute()}, status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-@app.route('/say')
-def say():
-    _check_secret()
-    text = request.args.get("text")
-    lang = request.args.get("lang")
-    if not text:
-        return False
-    if not lang:
-        lang = "fr"
-    _play_tts(text, lang=lang)
-    return text
-
-
-def _check_secret():
-    if request.args.get("secret") != app.config.get("API_SECRET"):
-        abort(401)
+@app.route('/say', methods=['GET'])
+@use_args({
+    "text": fields.Str(required=True),
+    "lang": fields.Str(default="fr")
+})
+@check_secret
+def say(args):
+    _play_tts(args["text"], lang=args["lang"])
+    return {}, status.HTTP_204_NO_CONTENT
 
 
 def _play_tts(text, lang='fr', slow=False):
@@ -65,7 +74,7 @@ def _play_tts(text, lang='fr', slow=False):
 
     urlparts = urlparse(request.url)
     mp3_url = "http://" + urlparts.netloc + path + filename
-    logging.info(mp3_url)
+    logging.info("Playing %s", mp3_url)
     _play_mp3(mp3_url)
 
 
