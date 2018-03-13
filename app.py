@@ -5,6 +5,7 @@ from functools import wraps, update_wrapper
 from pathlib import Path
 from urllib.parse import urlparse
 
+import arrow
 import pychromecast
 from flask import request, abort, make_response
 from flask_api import FlaskAPI, status
@@ -79,6 +80,17 @@ def _play_tts(text, lang=app.config.get("DEFAULT_LOCALE"), slow=False):
 def _play_mp3(mp3_url):
     chromecast.wait()
     chromecast.media_controller.play_media(mp3_url, 'audio/mp3')
+
+
+def _clean_cache():
+    critical_time = arrow.now().shift(hours=+5).shift(days=-7)
+    for item in Path('./static/cache/').glob('*.mp3'):
+        if item.is_file():
+            print(str(item.absolute()))
+            item_time = arrow.get(item.stat().st_mtime)
+            print(item_time)
+            if item_time < critical_time:
+                print("là")
 
 
 if __name__ == '__main__':
