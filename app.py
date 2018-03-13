@@ -40,7 +40,6 @@ def check_secret(view):
 
 
 @app.route('/play/<filename>', methods=['GET'])
-@app.route('/d/<msg_id>/<filename>')
 @check_secret
 def play(filename):
     mp3 = Path("./static/" + filename)
