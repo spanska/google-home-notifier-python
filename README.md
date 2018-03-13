@@ -37,6 +37,12 @@ You can also do other languages too:
 
 I use docker to run it. It works pretty well. I even included some pretty good docker script that will make it easier. Please check that out for more help. 
 
+run with:
+```bash
+docker build -t google-notifier:latest .
+docker run -d -p 8080:8080 google-notifier
+```
+
 # How
 
 Google homes are just chromecasts! Who knew! You just have to treat them like chromecasts. They show up when you browse for chromecasts via python or any other code library. You can then just send audio their way. 
