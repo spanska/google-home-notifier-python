@@ -54,7 +54,7 @@ def play(filename):
 @app.route('/say', methods=['GET'])
 @use_args({
     "text": fields.Str(required=True),
-    "lang": fields.Str(default="fr")
+    "lang": fields.Str(default=app.config.get("DEFAULT_LOCALE"))
 })
 @check_secret
 def say(args):
@@ -62,14 +62,14 @@ def say(args):
     return {}, status.HTTP_204_NO_CONTENT
 
 
-def _play_tts(text, lang='fr', slow=False):
+def _play_tts(text, lang=app.config.get("DEFAULT_LOCALE"), slow=False):
     tts = gTTS(text=text, lang=lang, slow=slow)
     filename = slugify(text + "-" + lang + "-" + str(slow)) + ".mp3"
     path = "/static/cache/"
     cache_filename = "." + path + filename
     tts_file = Path(cache_filename)
     if not tts_file.is_file():
-        logging.info(tts)
+        logging.error(tts)
         tts.save(cache_filename)
 
     mp3_url = "http://" + urlparse(request.url).netloc + path + filename
