@@ -10,6 +10,7 @@ import arrow
 import pychromecast
 from flask import request, abort, make_response
 from flask_api import FlaskAPI, status
+from flask_apscheduler import APScheduler
 from flask_cors import CORS
 from gtts import gTTS
 from slugify import slugify
@@ -94,4 +95,7 @@ def _clean_cache():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"))
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
+    app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"), use_reloader=False)
