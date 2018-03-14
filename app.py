@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import os
 from functools import wraps, update_wrapper
 from pathlib import Path
 from urllib.parse import urlparse
@@ -83,11 +84,13 @@ def _play_mp3(mp3_url):
 
 
 def _clean_cache():
-    critical_time = arrow.now().shift(days=-7)
+    logging.info("Cleaning cache")
+    critical_time = arrow.now().shift(days=-app.config.get("MP3_CACHING_DAYS"))
     for item in Path('./static/cache/').glob('*.mp3'):
         if item.is_file():
-            if arrow.get(item.stat().st_mtime) < critical_time:
-                print("là")
+            if arrow.get(item.stat().st_atime) < critical_time:
+                logging.info("Removing '%s'" % item)
+                os.remove(item)
 
 
 if __name__ == '__main__':
