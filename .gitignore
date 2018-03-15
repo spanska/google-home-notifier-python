@@ -1,4 +1,4 @@
-static/*.mp3
+static/cache/*
 
 .idea/google-home-notifier-python.iml
 .idea/misc.xml
