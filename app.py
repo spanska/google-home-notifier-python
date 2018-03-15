@@ -47,7 +47,7 @@ def check_secret(view):
 def play(filename):
     mp3 = Path("./static/" + filename)
     if mp3.is_file():
-        _play_mp3("http://" + urlparse(request.url).netloc + "/static/" + filename)
+        _play_audio("http://" + urlparse(request.url).netloc + "/static/" + filename)
         return {}, status.HTTP_204_NO_CONTENT
     else:
         return {"error": "%s is not a file" % mp3.absolute()}, status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -76,18 +76,18 @@ def _play_tts(text, lang=app.config.get("DEFAULT_LOCALE"), slow=False):
 
     mp3_url = "http://" + urlparse(request.url).netloc + path + filename
     logging.info("Playing %s", mp3_url)
-    _play_mp3(mp3_url)
+    _play_audio(mp3_url)
 
 
-def _play_mp3(mp3_url):
+def _play_audio(audio_url, codec='audio/mp3'):
     chromecast.wait()
-    chromecast.media_controller.play_media(mp3_url, 'audio/mp3')
+    chromecast.media_controller.play_media(audio_url, codec)
 
 
 def _clean_cache():
     logging.info("Cleaning cache")
-    critical_time = arrow.now().shift(days=-app.config.get("MP3_CACHING_DAYS"))
-    for item in Path('./static/cache/').glob('*.mp3'):
+    critical_time = arrow.now().shift(days=-app.config.get("AUDIO_CACHING_DAYS"))
+    for item in Path('./static/cache/').glob('*'):
         if item.is_file():
             if arrow.get(item.stat().st_atime) < critical_time:
                 logging.info("Removing '%s'" % item)
