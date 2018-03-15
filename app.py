@@ -17,6 +17,7 @@ from slugify import slugify
 from webargs import fields
 from webargs.flaskparser import use_args
 
+from .connectors import facebook_messenger
 from .connectors import youtube
 
 logging.basicConfig(level=logging.INFO)
@@ -24,6 +25,8 @@ logging.basicConfig(level=logging.INFO)
 app = FlaskAPI(__name__)
 CORS(app)
 app.config.from_pyfile('app_config.py')
+
+messenger = facebook_messenger.FacebookMessengerClient()
 
 logging.info("Finding ChromeCast named '%s'" % app.config.get("CHROMECAST_FRIENDLY_NAME"))
 chromecast = next(
@@ -78,6 +81,17 @@ def play_song_from_youtube(args):
     song_url = "http://" + urlparse(request.url).netloc + path + song.name
     logging.info("Playing %s", song_url)
     _play_audio(song_url, codec="audio/webm")
+    return {}, status.HTTP_204_NO_CONTENT
+
+
+@app.route('/facebook/messenger/say', method=['POST'])
+@use_args({
+    "user": fields.Str(required=True),
+    "message": fields.Str(required=True),
+}, locations=('json', 'form'))
+@check_secret
+def say_on_facebook_messenger(args):
+    messenger.send_message(args['user'], args['message'])
     return {}, status.HTTP_204_NO_CONTENT
 
 

@@ -20,3 +20,7 @@ JOBS = [
         'hour': 4,
     }
 ]
+
+# facebook parameters
+FACEBOOK_EMAIL = ""
+FACEBOOK_PASSWORD = ""

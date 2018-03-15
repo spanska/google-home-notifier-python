@@ -1,10 +1,11 @@
 # A notification server that sends notifications to Google Home
 
-This is a webservice that has three endpoints:
+This is a webservice that has four endpoints:
 
 - /play/ - plays an mp3 on the google home that is in the static folder
 - /say - uses googles unofficial google translate TTS service to say a notification
 - /youtube/play uses youtube to play songs
+- /facebook/messenger/say use facebook messenger to send message
 
 # use
 
@@ -32,14 +33,19 @@ You can also do other languages too:
 
 This will play the first song returned by youtube matching the corresponding query
 
+`/facebook/messenger/say`
+
+This will send a message to one of your friend on facebook messenger. You need to provide two POST variables `user`
+and `message` to use it.
+
 ## running for real
 
-I use docker to run it. It works pretty well. I even included some pretty good docker script that will make it easier. Please check that out for more help. 
+I use docker to run it. It works pretty well.
 
 run with:
 ```bash
-docker build -t google-notifier:latest .
-docker run -d -p 8080:8080 google-notifier
+docker build -t google-home-apis:latest .
+docker run -d -p 8080:8080 google-home-apis
 ```
 
 # How
