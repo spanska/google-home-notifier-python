@@ -1,6 +1,4 @@
-static/cache/*
-
-.idea/google-home-notifier-python.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/workspace.xml
+static/cache/
+.idea
+venv/
+__pycache__/
