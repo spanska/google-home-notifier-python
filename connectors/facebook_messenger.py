@@ -15,13 +15,12 @@ class FacebookMessengerClient:
         results = self.client.searchForUsers(user)
 
         if results:
-
             first_user = results[0]
             if first_user.is_friend:
                 self.client.send(Message(text=message), thread_id=first_user.uid, thread_type=ThreadType.USER)
 
             else:
-                raise Exception("The user %s is not your friend. You can't talk to him", user)
+                raise Exception("The user %s is not your friend. You can't talk to him" % user)
 
         else:
-            raise Exception("No user named '%s' was found", user)
+            raise Exception("No user named '%s' was found" % user)
