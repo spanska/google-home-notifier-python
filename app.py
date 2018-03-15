@@ -17,7 +17,7 @@ from slugify import slugify
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from connectors import youtube
+from .connectors import youtube
 
 logging.basicConfig(level=logging.INFO)
 
@@ -78,6 +78,7 @@ def play_song_from_youtube(args):
     song_url = "http://" + urlparse(request.url).netloc + path + song.name
     logging.info("Playing %s", song_url)
     _play_audio(song_url, codec="audio/webm")
+    return {}, status.HTTP_204_NO_CONTENT
 
 
 def _play_tts(text, lang=app.config.get("DEFAULT_LOCALE"), slow=False):
