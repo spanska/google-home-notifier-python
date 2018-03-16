@@ -4,11 +4,13 @@ import threading
 from inspect import signature
 
 import app
+from connectors import ifttt
 
 
 class GoogleHomeStateMachine:
     KEYWORD_TO_METHOD = {
-        "messenger": app.say_on_facebook_messenger
+        "messenger": app.say_on_facebook_messenger,
+        "sms": ifttt.send_sms
     }
 
     def __init__(self):

@@ -25,3 +25,6 @@ JOBS = [
 FACEBOOK_USER_RESOLVER_CACHE = 32
 FACEBOOK_EMAIL = ""
 FACEBOOK_PASSWORD = ""
+
+# ifttt webservices parameters
+SEND_SMS_WS = ("POST", "")
