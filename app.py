@@ -40,7 +40,7 @@ gh_adapter = gh_state_machine.GoogleHomeStateMachine()
 def check_secret(view):
     @wraps(view)
     def inner_check_secret(*args, **kwargs):
-        secret = request.args.get("secret") if request.method == 'GET' else secret = request.get_json()["secret"]
+        secret = request.args.get("secret") if request.method == 'GET' else request.get_json()["secret"]
         if secret != app.config.get("API_SECRET"):
             abort(401)
         else:
