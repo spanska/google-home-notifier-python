@@ -17,8 +17,8 @@ from slugify import slugify
 from webargs import fields
 from webargs.flaskparser import use_args
 
-from .connectors import facebook_messenger
-from .connectors import youtube
+from connectors import facebook_messenger
+from connectors import youtube
 
 logging.basicConfig(level=logging.INFO)
 
@@ -38,7 +38,8 @@ chromecast = next(
 def check_secret(view):
     @wraps(view)
     def inner_check_secret(*args, **kwargs):
-        if request.args.get("secret") != app.config.get("API_SECRET"):
+        secret = request.args.get("secret") if request.method == 'GET' else secret = request.get_json()["secret"]
+        if secret != app.config.get("API_SECRET"):
             abort(401)
         else:
             response = make_response(view(*args, **kwargs))
@@ -69,7 +70,7 @@ def say(args):
     return {}, status.HTTP_204_NO_CONTENT
 
 
-@app.route('/youtube/play', method=['GET'])
+@app.route('/youtube/play', methods=['GET'])
 @use_args({
     "query": fields.Str(required=True)
 })
@@ -84,7 +85,7 @@ def play_song_from_youtube(args):
     return {}, status.HTTP_204_NO_CONTENT
 
 
-@app.route('/facebook/messenger/say', method=['POST'])
+@app.route('/facebook/messenger/say', methods=['POST'])
 @use_args({
     "user": fields.Str(required=True),
     "message": fields.Str(required=True),
