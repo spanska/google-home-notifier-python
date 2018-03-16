@@ -17,6 +17,7 @@ from slugify import slugify
 from webargs import fields
 from webargs.flaskparser import use_args
 
+import gh_state_machine
 from connectors import facebook_messenger
 from connectors import youtube
 
@@ -26,13 +27,14 @@ app = FlaskAPI(__name__)
 CORS(app)
 app.config.from_pyfile('app_config.py')
 
-messenger = facebook_messenger.FacebookMessengerClient()
-
 logging.info("Finding ChromeCast named '%s'" % app.config.get("CHROMECAST_FRIENDLY_NAME"))
 chromecast = next(
     cc for cc in pychromecast.get_chromecasts()
     if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME")
 )
+
+messenger = facebook_messenger.FacebookMessengerClient()
+gh_adapter = gh_state_machine.GoogleHomeStateMachine()
 
 
 def check_secret(view):
@@ -93,6 +95,16 @@ def play_song_from_youtube(args):
 @check_secret
 def say_on_facebook_messenger(args):
     messenger.send_message(args['user'], args['message'])
+    return {}, status.HTTP_204_NO_CONTENT
+
+
+@app.route('/google/home/adapter', methods=['GET'])
+@use_args({
+    "token": fields.Str(required=True)
+})
+@check_secret
+def adapt_to_google(args):
+    gh_adapter.process(args['token'])
     return {}, status.HTTP_204_NO_CONTENT
 
 

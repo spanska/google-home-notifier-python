@@ -6,6 +6,7 @@ This is a webservice that has four endpoints:
 - /say - uses googles unofficial google translate TTS service to say a notification
 - /youtube/play uses youtube to play songs
 - /facebook/messenger/say use facebook messenger to send message
+- /google/home/adapter adapt a simple argument api to a multiple arguments one 
 
 # use
 
@@ -37,6 +38,14 @@ This will play the first song returned by youtube matching the corresponding que
 
 This will send a message to one of your friend on facebook messenger. You need to provide two POST variables `user`
 and `message` to use it.
+
+`/google/home/adapter?token=messenger` and
+
+`/google/home/adapter?token=Alice` and
+
+`/google/home/adapter?token=Hello There!`
+
+This will buffer method name and every single parameters and then will call the corresponding API
 
 ## running for real
 

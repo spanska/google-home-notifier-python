@@ -3,7 +3,7 @@
 import threading
 from inspect import signature
 
-from . import app
+import app
 
 
 class GoogleHomeStateMachine:
