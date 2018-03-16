@@ -1,11 +1,12 @@
 # A notification server that sends notifications to Google Home
 
-This is a webservice that has four endpoints:
+This is a webservice that has six endpoints:
 
 - /play/ - plays an mp3 on the google home that is in the static folder
 - /say - uses googles unofficial google translate TTS service to say a notification
 - /youtube/play uses youtube to play songs
 - /facebook/messenger/say use facebook messenger to send message
+- /android/sms/send send a sms via ifttt
 - /google/home/adapter adapt a simple argument api to a multiple arguments one 
 
 # use
@@ -36,7 +37,7 @@ This will play the first song returned by youtube matching the corresponding que
 
 `/facebook/messenger/say`
 
-This will send a message to one of your friend on facebook messenger. You need to provide two POST variables `user`
+This will send a message to one of your friend on facebook messenger. You need to provide two POST variables `to`
 and `message` to use it.
 
 `/google/home/adapter?token=messenger` and
@@ -46,6 +47,11 @@ and `message` to use it.
 `/google/home/adapter?token=Hello There!`
 
 This will buffer method name and every single parameters and then will call the corresponding API
+
+`/android/sms/send`
+
+This will send a sms to someone. You need to provide two POST variables `to` and `message` to use it.
+You must before using it create an endpoint on ifttt
 
 ## running for real
 

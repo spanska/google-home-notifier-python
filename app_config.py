@@ -27,4 +27,5 @@ FACEBOOK_EMAIL = ""
 FACEBOOK_PASSWORD = ""
 
 # ifttt webservices parameters
-SEND_SMS_WS = ("POST", "")
+IFTTT_WS = ""
+SEND_SMS_WS = IFTTT_WS.replace("{event}", "send_sms")

@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 import arrow
 import pychromecast
+import requests
 from flask import request, abort, make_response
 from flask_api import FlaskAPI, status
 from flask_apscheduler import APScheduler
@@ -89,12 +90,23 @@ def play_song_from_youtube(args):
 
 @app.route('/facebook/messenger/say', methods=['POST'])
 @use_args({
-    "user": fields.Str(required=True),
+    "to": fields.Str(required=True),
     "message": fields.Str(required=True),
 }, locations=('json', 'form'))
 @check_secret
 def say_on_facebook_messenger(args):
-    messenger.send_message(args['user'], args['message'])
+    messenger.send_message(args['to'], args['message'])
+    return {}, status.HTTP_204_NO_CONTENT
+
+
+@app.route('/android/sms/send', method=['POST'])
+@use_args({
+    "to": fields.Str(required=True),
+    "message": fields.Str(required=True),
+}, locations=('json', 'form'))
+@check_secret
+def send_sms(args):
+    requests.get(app.config.get("SEND_SMS_WS"), data={'value1': args['to'], 'value2': args['message']})
     return {}, status.HTTP_204_NO_CONTENT
 
 
