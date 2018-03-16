@@ -99,7 +99,7 @@ def say_on_facebook_messenger(args):
     return {}, status.HTTP_204_NO_CONTENT
 
 
-@app.route('/android/sms/send', method=['POST'])
+@app.route('/android/sms/send', methods=['POST'])
 @use_args({
     "to": fields.Str(required=True),
     "message": fields.Str(required=True),
@@ -154,4 +154,8 @@ if __name__ == '__main__':
     scheduler = APScheduler()
     scheduler.init_app(app)
     scheduler.start()
+    gh_adapter.init_config({
+        "messenger": say_on_facebook_messenger,
+        "sms": send_sms
+    })
     app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"), use_reloader=False)

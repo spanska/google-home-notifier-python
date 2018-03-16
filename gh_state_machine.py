@@ -3,27 +3,25 @@
 import threading
 from inspect import signature
 
-import app
-
 
 class GoogleHomeStateMachine:
-    KEYWORD_TO_METHOD = {
-        "messenger": app.say_on_facebook_messenger,
-        "sms": app.send_sms
-    }
 
     def __init__(self):
+        self.config = None
         self.threadLock = threading.Lock()
         self.state = 'WAITING_METHOD'
         self.method = None
         self.arg_number = 0
         self.params = []
 
+    def init_config(self, config):
+        self.config = config
+
     def process(self, token):
         self.threadLock.acquire()
 
         if self.state == 'WAITING_METHOD':
-            self.method = GoogleHomeStateMachine.KEYWORD_TO_METHOD[token]
+            self.method = self.config[token]
             self.arg_number = len(signature(self.method).parameters)
             self.state = 'WAITING_PARAM'
 
