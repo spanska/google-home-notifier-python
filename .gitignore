@@ -1,4 +1,4 @@
-static/cache/
+static/cache/!.gitignore
 .idea
 venv/
 __pycache__/
