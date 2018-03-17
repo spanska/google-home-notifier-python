@@ -147,7 +147,7 @@ def _play_audio(audio_url, codec='audio/mp3'):
 def _clean_cache():
     logging.info("Cleaning cache")
     critical_time = arrow.now().shift(days=-app.config.get("AUDIO_CACHING_DAYS"))
-    for item in Path('./static/cache/').glob('*'):
+    for item in Path('./static/cache/').glob('[!.]*'):
         if item.is_file():
             if arrow.get(item.stat().st_atime) < critical_time:
                 logging.info("Removing '%s'" % item)
