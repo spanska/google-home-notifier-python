@@ -106,8 +106,12 @@ def say_on_facebook_messenger(args):
 }, locations=('json', 'form'))
 @check_secret
 def send_sms(args):
-    requests.get(app.config.get("SEND_SMS_WS"), data={'value1': args['to'], 'value2': args['message']})
-    return {}, status.HTTP_204_NO_CONTENT
+    r = requests.get(app.config.get("SEND_SMS_WS"), data={'value1': args['to'], 'value2': args['message']})
+    if r.status_code == 200:
+        return {}, status.HTTP_204_NO_CONTENT
+    else:
+        return {"error": "the IFTTT webservice return an error (status=%s)" % r.status_code}, \
+               status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 @app.route('/google/home/adapter', methods=['GET'])
