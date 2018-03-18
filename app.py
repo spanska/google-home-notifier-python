@@ -65,7 +65,7 @@ def play(filename):
 @app.route('/say', methods=['GET'])
 @use_args({
     "text": fields.Str(required=True),
-    "lang": fields.Str(default=app.config.get("DEFAULT_LOCALE"))
+    "lang": fields.Str(missing=app.config.get("DEFAULT_LOCALE"))
 })
 @check_secret
 def say(args):
@@ -80,9 +80,7 @@ def say(args):
 @check_secret
 def play_song_from_youtube(args):
     song = youtube.find_and_download_first_song(args['query'])
-
-    path = "/static/cache/"
-    song_url = "http://" + urlparse(request.url).netloc + path + song.name
+    song_url = "http://" + urlparse(request.url).netloc + "/static/cache/" + song.name
     logging.info("Playing %s", song_url)
     _play_audio(song_url, codec="audio/%s" % song.suffix[1:])
     return {}, status.HTTP_204_NO_CONTENT
