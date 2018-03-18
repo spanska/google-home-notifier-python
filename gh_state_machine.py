@@ -18,25 +18,27 @@ class GoogleHomeStateMachine:
         self.config = config
 
     def process(self, token):
-        self.threadLock.acquire()
+        with self.threadLock:
+            if self.state == 'WAITING_METHOD':
 
-        if self.state == 'WAITING_METHOD':
-            self.method = self.config[token]
-            self.arg_number = len(signature(self.method).parameters)
-            self.state = 'WAITING_PARAM'
+                if token in self.method:
+                    self.method = self.config[token]
+                    self.arg_number = len(signature(self.method).parameters)
+                    self.state = 'WAITING_PARAM:'
 
-        elif self.state == 'WAITING_PARAM':
+                else:
+                    raise Exception("%s is not a valid method" % token)
 
-            if token == "cancel":
-                self._reset()
+            elif self.state == 'WAITING_PARAM':
 
-            else:
-                self.params.append(token)
-                if len(self.params) == self.arg_number:
-                    self.method(*self.params)
+                if token == "cancel":
                     self._reset()
 
-        self.threadLock.release()
+                else:
+                    self.params.append(token)
+                    if len(self.params) == self.arg_number:
+                        self.method(*self.params)
+                        self._reset()
 
     def _reset(self):
         self.method = None
