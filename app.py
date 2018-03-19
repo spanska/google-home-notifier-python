@@ -129,7 +129,6 @@ def _play_tts(text, lang=app.config.get("DEFAULT_LOCALE"), slow=False):
     cache_filename = "." + path + filename
     tts_file = Path(cache_filename)
     if not tts_file.is_file():
-        logging.error(tts)
         tts.save(cache_filename)
 
     mp3_url = "http://" + urlparse(request.url).netloc + path + filename
