@@ -112,8 +112,8 @@ def send_sms(args):
 })
 @check_secret
 def adapt_to_google(args):
-    gh_adapter.process(args['token'])
-    return {}, status.HTTP_204_NO_CONTENT
+    message = gh_adapter.process(args['token'])
+    return {"message": message}, status.HTTP_200_OK
 
 
 def _play_tts(text, lang=app.config.get("DEFAULT_LOCALE"), slow=False):
