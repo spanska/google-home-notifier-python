@@ -93,8 +93,7 @@ def play_song_from_youtube(args):
 }, locations=('json', 'form'))
 @check_secret
 def say_on_facebook_messenger(args):
-    messenger.send_message(args['to'], args['message'])
-    return {}, status.HTTP_204_NO_CONTENT
+    return _say_on_facebook_messenger(args["to"], args["message"])
 
 
 @app.route('/android/sms/send', methods=['POST'])
@@ -104,12 +103,7 @@ def say_on_facebook_messenger(args):
 }, locations=('json', 'form'))
 @check_secret
 def send_sms(args):
-    r = requests.get(app.config.get("SEND_SMS_WS"), data={'value1': args['to'], 'value2': args['message']})
-    if r.status_code == 200:
-        return {}, status.HTTP_204_NO_CONTENT
-    else:
-        return {"error": "the IFTTT webservice return an error (status=%s)" % r.status_code}, \
-               status.HTTP_500_INTERNAL_SERVER_ERROR
+    return _send_sms(args["to"], args["message"])
 
 
 @app.route('/google/home/adapter', methods=['GET'])
@@ -141,6 +135,20 @@ def _play_audio(audio_url, codec='audio/mp3'):
     chromecast.media_controller.play_media(audio_url, codec)
 
 
+def _say_on_facebook_messenger(to, message):
+    messenger.send_message(to, message)
+    return {}, status.HTTP_204_NO_CONTENT
+
+
+def _send_sms(to, message):
+    r = requests.get(app.config.get("SEND_SMS_WS"), data={'value1': to, 'value2': message})
+    if r.status_code == 200:
+        return {}, status.HTTP_204_NO_CONTENT
+    else:
+        return {"error": "the IFTTT webservice return an error (status=%s)" % r.status_code}, \
+               status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
 def _clean_cache():
     logging.info("Cleaning cache")
     critical_time = arrow.now().shift(days=-app.config.get("AUDIO_CACHING_DAYS"))
@@ -156,7 +164,7 @@ if __name__ == '__main__':
     scheduler.init_app(app)
     scheduler.start()
     gh_adapter.init_config({
-        "messenger": say_on_facebook_messenger,
-        "sms": send_sms
+        "messenger": _say_on_facebook_messenger,
+        "sms": _send_sms
     })
     app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"), use_reloader=False)
