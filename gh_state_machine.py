@@ -24,7 +24,7 @@ class GoogleHomeStateMachine:
                 if token in self.config:
                     self.method = self.config[token]
                     self.arg_number = len(signature(self.method).parameters)
-                    self.state = 'WAITING_PARAM:'
+                    self.state = 'WAITING_PARAM'
 
                 else:
                     raise Exception("%s is not a valid method" % token)
