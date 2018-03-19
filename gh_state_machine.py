@@ -21,7 +21,7 @@ class GoogleHomeStateMachine:
         with self.threadLock:
             if self.state == 'WAITING_METHOD':
 
-                if token in self.method:
+                if token in self.config:
                     self.method = self.config[token]
                     self.arg_number = len(signature(self.method).parameters)
                     self.state = 'WAITING_PARAM:'
