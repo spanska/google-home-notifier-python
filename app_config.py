@@ -29,3 +29,4 @@ FACEBOOK_PASSWORD = ""
 # ifttt webservices parameters
 IFTTT_WS = ""
 SEND_SMS_WS = IFTTT_WS.replace("{event}", "sms")
+VCF_FILE = ""
