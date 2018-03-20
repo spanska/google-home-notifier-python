@@ -40,8 +40,11 @@ gh_adapter = gh_state_machine.GoogleHomeStateMachine()
 
 logging.info("Reading contact file: '%s'" % app.config.get("VCF_FILE"))
 with open(app.config.get("VCF_FILE")) as file:
-    contacts = vobject.readComponents(file)
-    result = {contact.contents["fn"][0].value: contact.contents["tel"][0].value for contact in contacts}
+    contact_to_tel = {
+        contact.contents["fn"][0].value: contact.contents["tel"][0].value
+        for contact in vobject.readComponents(file)
+    }
+    contact_names = contact_to_tel.keys()
 
 
 def check_secret(view):
