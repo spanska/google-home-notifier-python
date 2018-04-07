@@ -29,11 +29,8 @@ app = FlaskAPI(__name__)
 CORS(app)
 app.config.from_pyfile('app_config.py')
 
-logging.info("Finding ChromeCast named '%s'" % app.config.get("CHROMECAST_FRIENDLY_NAME"))
-chromecast = next(
-    cc for cc in pychromecast.get_chromecasts()
-    if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME")
-)
+logging.info("Connecting to ChromeCast '%s'" % app.config.get("CHROMECAST_IP"))
+chromecast = pychromecast.Chromecast(app.config.get("CHROMECAST_IP"))
 
 messenger = facebook_messenger.FacebookMessengerClient()
 gh_adapter = gh_state_machine.GoogleHomeStateMachine()

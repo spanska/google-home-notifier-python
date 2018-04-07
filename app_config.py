@@ -5,7 +5,7 @@ DEBUG = True
 API_SECRET = ""
 
 # casting Parameters
-CHROMECAST_FRIENDLY_NAME = ""
+CHROMECAST_IP = ""
 DEFAULT_LOCALE = "fr"
 
 # purge Parameters
