@@ -2,10 +2,10 @@
 
 # Flask Parameters
 DEBUG = True
-API_SECRET = "toto"
+API_SECRET = ""
 
 # casting Parameters
-CHROMECAST_FRIENDLY_NAME = "19"
+CHROMECAST_IP = ""
 DEFAULT_LOCALE = "fr"
 
 # purge Parameters

@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import arrow
+import pychromecast
 import requests
 import vobject
 from flask import request, abort, make_response
@@ -29,11 +30,8 @@ app = FlaskAPI(__name__)
 CORS(app)
 app.config.from_pyfile('app_config.py')
 
-logging.info("Finding ChromeCast named '%s'" % app.config.get("CHROMECAST_FRIENDLY_NAME"))
-# chromecast = next(
-#     cc for cc in pychromecast.get_chromecasts()
-#     if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME")
-# )
+logging.info("Connecting to ChromeCast '%s'" % app.config.get("CHROMECAST_IP"))
+chromecast = pychromecast.Chromecast(app.config.get("CHROMECAST_IP"))
 
 messenger = facebook_messenger.FacebookMessengerClient()
 gh_adapter = gh_state_machine.GoogleHomeStateMachine()
@@ -78,7 +76,7 @@ def play(filename):
 })
 @check_secret
 def say(args):
-    print(args["text"], lang=args["lang"])
+    _play_tts(args["text"], lang=args["lang"])
     return {}, status.HTTP_204_NO_CONTENT
 
 
