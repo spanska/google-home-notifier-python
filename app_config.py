@@ -2,10 +2,10 @@
 
 # Flask Parameters
 DEBUG = True
-API_SECRET = ""
+API_SECRET = "toto"
 
 # casting Parameters
-CHROMECAST_FRIENDLY_NAME = ""
+CHROMECAST_FRIENDLY_NAME = "19"
 DEFAULT_LOCALE = "fr"
 
 # purge Parameters
@@ -30,3 +30,6 @@ FACEBOOK_PASSWORD = ""
 IFTTT_WS = ""
 SEND_SMS_WS = IFTTT_WS.replace("{event}", "sms")
 VCF_FILE = ""
+
+# google state machine parameters
+RESET_SENTENCE = "OK, j'annule l'action en cours"

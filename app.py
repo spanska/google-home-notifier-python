@@ -7,7 +7,6 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import arrow
-import pychromecast
 import requests
 import vobject
 from flask import request, abort, make_response
@@ -31,10 +30,10 @@ CORS(app)
 app.config.from_pyfile('app_config.py')
 
 logging.info("Finding ChromeCast named '%s'" % app.config.get("CHROMECAST_FRIENDLY_NAME"))
-chromecast = next(
-    cc for cc in pychromecast.get_chromecasts()
-    if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME")
-)
+# chromecast = next(
+#     cc for cc in pychromecast.get_chromecasts()
+#     if cc.device.friendly_name == app.config.get("CHROMECAST_FRIENDLY_NAME")
+# )
 
 messenger = facebook_messenger.FacebookMessengerClient()
 gh_adapter = gh_state_machine.GoogleHomeStateMachine()
@@ -79,7 +78,7 @@ def play(filename):
 })
 @check_secret
 def say(args):
-    _play_tts(args["text"], lang=args["lang"])
+    print(args["text"], lang=args["lang"])
     return {}, status.HTTP_204_NO_CONTENT
 
 
@@ -184,7 +183,15 @@ if __name__ == '__main__':
     scheduler.init_app(app)
     scheduler.start()
     gh_adapter.init_config({
-        "messenger": _say_on_facebook_messenger,
-        "sms": _send_sms
-    })
+        "messenger": {"method": _say_on_facebook_messenger, "dialog": [
+            "OK, l'interface facebook est prête",
+            "OK, le destinaire est correctement sélectionné",
+            "OK, le message facebook est envoyé"
+        ]},
+        "sms": {"method": _send_sms, "dialog": [
+            "OK, l'interface sms est prête",
+            "OK, le destinaire est correctement sélectionné",
+            "OK, le message SMS est envoyé"
+        ]}
+    }, say, app.config.get("RESET_SENTENCE"))
     app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"), use_reloader=False)
