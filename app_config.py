@@ -32,4 +32,4 @@ SEND_SMS_WS = IFTTT_WS.replace("{event}", "sms")
 VCF_FILE = ""
 
 # google state machine parameters
-RESET_SENTENCE = "OK, j'annule l'action en cours"
+RESET_SENTENCE = "OK, l'action a été correctement annulée"
