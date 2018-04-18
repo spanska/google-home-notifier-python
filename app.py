@@ -183,12 +183,12 @@ if __name__ == '__main__':
     gh_adapter.init_config({
         "messenger": {"method": _say_on_facebook_messenger, "dialog": [
             "OK, l'interface facebook est prête",
-            "OK, le destinaire est correctement sélectionné",
+            "OK, le destinataire est correctement sélectionné",
             "OK, le message facebook est envoyé"
         ]},
         "sms": {"method": _send_sms, "dialog": [
             "OK, l'interface sms est prête",
-            "OK, le destinaire est correctement sélectionné",
+            "OK, le destinataire est correctement sélectionné",
             "OK, le message SMS est envoyé"
         ]}
     }, _play_tts, app.config.get("RESET_SENTENCE"))
