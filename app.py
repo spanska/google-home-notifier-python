@@ -191,5 +191,5 @@ if __name__ == '__main__':
             "OK, le destinaire est correctement sélectionné",
             "OK, le message SMS est envoyé"
         ]}
-    }, say, app.config.get("RESET_SENTENCE"))
+    }, _play_tts, app.config.get("RESET_SENTENCE"))
     app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"), use_reloader=False)
