@@ -34,7 +34,7 @@ logging.info("Connecting to ChromeCast '%s'" % app.config.get("CHROMECAST_IP"))
 chromecast = pychromecast.Chromecast(app.config.get("CHROMECAST_IP"))
 
 messenger = facebook_messenger.FacebookMessengerClient()
-gh_adapter = gh_state_machine.GoogleHomeStateMachine()
+gh_adapter = gh_state_machine.GoogleHomeStateMachine(app.config.get("RESET_SENTENCE"), app.config.get("ERROR_SENTENCE"))
 
 logging.info("Reading contact file: '%s'" % app.config.get("VCF_FILE"))
 with open(app.config.get("VCF_FILE")) as file:
@@ -191,5 +191,5 @@ if __name__ == '__main__':
             "OK, le destinataire est correctement sélectionné",
             "OK, le message SMS est envoyé"
         ]}
-    }, _play_tts, app.config.get("RESET_SENTENCE"))
+    }, _play_tts)
     app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"), use_reloader=False)

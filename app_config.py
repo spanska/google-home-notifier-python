@@ -33,3 +33,4 @@ VCF_FILE = ""
 
 # google state machine parameters
 RESET_SENTENCE = "OK, l'action a été correctement annulée"
+ERROR_SENTENCE = "Je suis désolé mais je crois que l'adapteur google a rencontré une erreur"
