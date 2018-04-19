@@ -15,13 +15,12 @@ from flask_api import FlaskAPI, status
 from flask_apscheduler import APScheduler
 from flask_cors import CORS
 from gtts import gTTS
-from pylev3 import Levenshtein
 from slugify import slugify
 from webargs import fields
 from webargs.flaskparser import use_args
 
+import contact_finder
 import gh_state_machine
-import string_finder
 from connectors import facebook_messenger
 from connectors import youtube
 
@@ -43,7 +42,7 @@ with open(app.config.get("VCF_FILE")) as file:
         contact.contents["fn"][0].value: contact.contents["tel"][0].value
         for contact in vobject.readComponents(file)
     }
-    contacts = [string_finder.normalize(item) for item in list(contact_to_tel.keys())]
+    contacts = list(contact_to_tel.keys())
 
 
 def check_secret(view):
@@ -149,22 +148,16 @@ def _say_on_facebook_messenger(to, message):
 
 
 def _send_sms(to, message):
-    try:
+    contact = contact_finder.find_best_match(to, contacts)
+    logging.info("Contact found: %s", contact)
+    tel = contact_to_tel[contact]
 
-        result = Levenshtein.wfi(contacts, to)
-        index = next(x[0] for x in enumerate(result) if x[1] <= 3)
-        logging.info("Contact found: %s", contacts[index])
-        tel = contact_to_tel[contacts[index]]
-
-        r = requests.get(app.config.get("SEND_SMS_WS"), data={'value1': tel, 'value2': message})
-        if r.status_code == 200:
-            return {}, status.HTTP_204_NO_CONTENT
-        else:
-            return {"error": "the IFTTT webservice return an error (status=%s)" % r.status_code}, \
-                   status.HTTP_500_INTERNAL_SERVER_ERROR
-
-    except StopIteration:
-        return {"error": "No contact named %s foud" % to}, status.HTTP_404_NOT_FOUND
+    r = requests.get(app.config.get("SEND_SMS_WS"), data={'value1': tel, 'value2': message})
+    if r.status_code == 200:
+        return {}, status.HTTP_204_NO_CONTENT
+    else:
+        return {"error": "the IFTTT webservice return an error (status=%s)" % r.status_code}, \
+               status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
 def _clean_cache():
