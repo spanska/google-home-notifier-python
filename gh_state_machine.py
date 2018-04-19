@@ -66,10 +66,10 @@ class GoogleHomeStateMachine:
                         return "Successfully register %s parameter" % token
 
     def _reset(self):
-        self.params = []
         self.state = 'WAITING_METHOD'
-        self.index = 0
         self.method_name = None
+        self.index = 0
+        self.params = []
 
     def _say_and_increment(self):
         self.say(self.config[self.method_name]["dialog"][self.index])
