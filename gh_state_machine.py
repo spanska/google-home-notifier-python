@@ -11,11 +11,11 @@ class GoogleHomeStateMachine:
         self.state = 'WAITING_METHOD'
         self.reset_sentence = reset_sentence
         self.error_sentence = error_sentence
-        self.config = None
-        self.say = None
+        self.method_name = None
         self.index = 0
         self.params = []
-        self.method_name = None
+        self.config = None
+        self.say = None
 
     def init_config(self, config, say):
         self.config = config
