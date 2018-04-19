@@ -34,3 +34,13 @@ VCF_FILE = ""
 # google state machine parameters
 RESET_SENTENCE = "OK, l'action a été correctement annulée"
 ERROR_SENTENCE = "Je suis désolé mais je crois que l'adapteur google a rencontré une erreur"
+MESSENGER_DIALOG = [
+    "OK, l'interface facebook est prête",
+    "OK, le destinataire est correctement sélectionné",
+    "OK, le message facebook est envoyé"
+]
+SMS_DIALOG = [
+    "OK, l'interface sms est prête",
+    "OK, le destinataire est correctement sélectionné",
+    "OK, le message SMS est envoyé"
+]

@@ -175,15 +175,7 @@ if __name__ == '__main__':
     scheduler.init_app(app)
     scheduler.start()
     gh_adapter.init_config({
-        "messenger": {"method": _say_on_facebook_messenger, "dialog": [
-            "OK, l'interface facebook est prête",
-            "OK, le destinataire est correctement sélectionné",
-            "OK, le message facebook est envoyé"
-        ]},
-        "sms": {"method": _send_sms, "dialog": [
-            "OK, l'interface sms est prête",
-            "OK, le destinataire est correctement sélectionné",
-            "OK, le message SMS est envoyé"
-        ]}
+        "messenger": {"method": _say_on_facebook_messenger, "dialog": app.config.get("MESSENGER_DIALOG")},
+        "sms": {"method": _send_sms, "dialog": app.config.get("SMS_DIALOG")}
     }, _play_tts)
     app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"), use_reloader=False)
