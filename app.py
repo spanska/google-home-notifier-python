@@ -21,6 +21,7 @@ from webargs import fields
 from webargs.flaskparser import use_args
 
 import gh_state_machine
+import string_finder
 from connectors import facebook_messenger
 from connectors import youtube
 
@@ -42,7 +43,7 @@ with open(app.config.get("VCF_FILE")) as file:
         contact.contents["fn"][0].value: contact.contents["tel"][0].value
         for contact in vobject.readComponents(file)
     }
-    contacts = list(contact_to_tel.keys())
+    contacts = [string_finder.normalize(item) for item in list(contact_to_tel.keys())]
 
 
 def check_secret(view):
