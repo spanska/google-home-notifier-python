@@ -3,14 +3,14 @@
 import threading
 from inspect import signature
 
+import app_config
+
 
 class GoogleHomeStateMachine:
 
-    def __init__(self, reset_sentence, error_sentence):
+    def __init__(self):
         self.threadLock = threading.Lock()
         self.state = 'WAITING_METHOD'
-        self.reset_sentence = reset_sentence
-        self.error_sentence = error_sentence
         self.method_name = None
         self.index = 0
         self.params = []
@@ -32,14 +32,14 @@ class GoogleHomeStateMachine:
                     return "Successfully register %s method" % self.method_name
 
                 else:
-                    self.say(self.error_sentence)
+                    self.say(app_config.ERROR_SENTENCE)
                     raise Exception("%s is not a valid method" % token)
 
             elif self.state == 'WAITING_PARAM':
 
                 if token == "cancel":
                     self._reset()
-                    self.say(self.reset_sentence)
+                    self.say(app_config.RESET_SENTENCE)
                     return "Reset GoogleHomeStateMachine to WAITING_METHOD"
 
                 else:
@@ -57,7 +57,7 @@ class GoogleHomeStateMachine:
                             return msg
 
                         except Exception as e:
-                            self.say(self.error_sentence)
+                            self.say(app_config.ERROR_SENTENCE)
                             self._reset()
                             raise e
 

@@ -34,7 +34,7 @@ logging.info("Connecting to ChromeCast '%s'" % app.config.get("CHROMECAST_IP"))
 chromecast = pychromecast.Chromecast(app.config.get("CHROMECAST_IP"))
 
 messenger = facebook_messenger.FacebookMessengerClient()
-gh_adapter = gh_state_machine.GoogleHomeStateMachine(app.config.get("RESET_SENTENCE"), app.config.get("ERROR_SENTENCE"))
+gh_adapter = gh_state_machine.GoogleHomeStateMachine()
 
 logging.info("Reading contact file: '%s'" % app.config.get("VCF_FILE"))
 with open(app.config.get("VCF_FILE")) as file:
