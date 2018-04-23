@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import logging
 import unicodedata
 from collections import Counter
 
@@ -20,6 +21,7 @@ def find_best_match(input_str, tab):
 
     else:
         index = result.index(min(result))
+        logging.info("Contact found %s" % tab[index])
         return tab[index]
 
 
