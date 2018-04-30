@@ -143,6 +143,7 @@ def _play_audio(audio_url, codec='audio/mp3'):
 
 
 def _say_on_facebook_messenger(to, message):
+    message += "\n " + app.config.get("MESSAGE_MARKER")
     messenger.send_message(to, message)
     return {}, status.HTTP_204_NO_CONTENT
 
@@ -151,6 +152,8 @@ def _send_sms(to, message):
     contact = contact_finder.find_best_match(to, contacts)
     logging.info("Contact found: %s", contact)
     tel = contact_to_tel[contact]
+
+    message += "\n " + app.config.get("MESSAGE_MARKER")
 
     r = requests.get(app.config.get("SEND_SMS_WS"), data={'value1': tel, 'value2': message})
     if r.status_code == 200:

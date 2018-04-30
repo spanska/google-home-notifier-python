@@ -44,3 +44,5 @@ SMS_DIALOG = [
     "OK, le destinataire est correctement sélectionné",
     "OK, le message SMS est envoyé"
 ]
+
+MESSAGE_MARKER = "(Envoyé depuis ma GoogleHome)"
