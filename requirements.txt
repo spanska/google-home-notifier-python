@@ -1,4 +1,4 @@
-gTTS==1.2.2
+gTTS==2.0.0
 Flask==0.12.2
 Flask-API==1.0
 Flask-Cors==3.0.3
