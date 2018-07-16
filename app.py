@@ -123,17 +123,16 @@ def adapt_to_google(args):
     return {"message": message}, status.HTTP_200_OK
 
 
-@app.route('/google/chromecast', methods=['PUT'])
+@app.route('/google/audio', methods=['PUT'])
 @use_args({
     "device_name": fields.Str(required=True)
 })
-@check_secret
 def set_device(args):
-    device_name = app.config.get("CHROMECAST_IP").get(args["device_name"], "default")
-    logging.info("Connecting to ChromeCast '%s'" % device_name)
+    device_ip = app.config.get("CHROMECAST_IP").get(args["device_name"], "default")
+    logging.info("Connecting to ChromeCast '%s'" % device_ip)
     global chromecast
     chromecast.disconnect()
-    chromecast = pychromecast.Chromecast(app.config.get("CHROMECAST_IP")[device_name])
+    chromecast = pychromecast.Chromecast(device_ip)
     return {}, status.HTTP_204_NO_CONTENT
 
 
