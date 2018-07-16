@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Flask Parameters
-DEBUG = True
+DEBUG = False
 API_SECRET = ""
 
 # casting Parameters
