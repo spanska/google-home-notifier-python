@@ -5,7 +5,10 @@ DEBUG = True
 API_SECRET = ""
 
 # casting Parameters
-CHROMECAST_IP = ""
+CHROMECAST_IP = {
+    "default": "",
+    "hifi": ""
+}
 DEFAULT_LOCALE = "fr"
 
 # purge Parameters

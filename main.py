@@ -30,8 +30,8 @@ app = FlaskAPI(__name__)
 CORS(app)
 app.config.from_pyfile('app_config.py')
 
-logging.info("Connecting to ChromeCast '%s'" % app.config.get("CHROMECAST_IP"))
-chromecast = pychromecast.Chromecast(app.config.get("CHROMECAST_IP"))
+logging.info("Connecting to ChromeCast '%s'" % app.config.get("CHROMECAST_IP")["default"])
+chromecast = pychromecast.Chromecast(app.config.get("CHROMECAST_IP")["default"])
 
 messenger = facebook_messenger.FacebookMessengerClient()
 gh_adapter = gh_state_machine.GoogleHomeStateMachine()
@@ -121,6 +121,20 @@ def send_sms(args):
 def adapt_to_google(args):
     message = gh_adapter.process(args['token'])
     return {"message": message}, status.HTTP_200_OK
+
+
+@app.route('/google/chromecast', methods=['PUT'])
+@use_args({
+    "device_name": fields.Str(required=True)
+})
+@check_secret
+def set_device(args):
+    device_name = app.config.get("CHROMECAST_IP").get(args["device_name"], "default")
+    logging.info("Connecting to ChromeCast '%s'" % device_name)
+    global chromecast
+    chromecast.disconnect()
+    chromecast = pychromecast.Chromecast(app.config.get("CHROMECAST_IP")[device_name])
+    return {}, status.HTTP_204_NO_CONTENT
 
 
 def _play_tts(text, lang=app.config.get("DEFAULT_LOCALE"), slow=False):
