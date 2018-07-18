@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import multiprocessing
 import re
 from pathlib import Path
 
@@ -19,13 +20,38 @@ def find_and_download_song(search_query):
     result = re.search(r'href=\"/watch\?v=(.{11})', r.text).group()[-11:]
     if result:
         logging.info("Song find with tag %s" % result)
-        return _download_song(result)
+        return _download_playlist([result])
 
     else:
         raise Exception("No Youtube result found for '%s'" % search_query)
 
 
-def _download_song(video_id):
+def _download_playlist(video_ids):
+    if not video_ids:
+        return []
+
+    elif len(video_ids) == 1:
+        playlist = []
+        _download_song(video_ids[0], playlist)
+        return playlist
+
+    else:
+        with multiprocessing.Manager() as manager:
+            playlist = manager.list()
+
+            processes = []
+            for video_id in video_ids:
+                process = multiprocessing.Process(target=_download_song, args=(video_id, playlist))
+                process.start()
+                processes.append(process)
+
+            for process in processes:
+                process.join()
+
+            return [song for song in playlist]
+
+
+def _download_song(video_id, playlist):
     filename = None
 
     def _play_hook(d):
@@ -40,4 +66,4 @@ def _download_song(video_id):
     }) as ydl:
         ydl.download(['http://www.youtube.com/watch?v=%s' % video_id])
 
-    return Path(filename)
+    playlist.append(Path(filename))
