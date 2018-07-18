@@ -13,7 +13,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 F
 PLAYLIST = multiprocessing.Queue()
 
 
-def find_and_download_song(search_query):
+def find_and_download_song(search_query, follow_playlist=False):
     r = requests.post(
         'https://www.youtube.com/results',
         data={'search_query': search_query},
@@ -22,33 +22,23 @@ def find_and_download_song(search_query):
     result = re.search(r'href=\"/watch\?v=(.{11})', r.text).group()[-11:]
     if result:
         logging.info("Song find with tag %s" % result)
-        _download_playlist([result])
+        if follow_playlist:
+            _download_song_non_blocking(result)
+        else:
+            _download_song_process(result, PLAYLIST)
+
         return PLAYLIST
 
     else:
         raise Exception("No Youtube result found for '%s'" % search_query)
 
 
-def _download_playlist(video_ids):
-    if not video_ids:
-        return []
-
-    elif len(video_ids) == 1:
-        _download_song(video_ids[0], PLAYLIST)
-
-    else:
-
-        processes = []
-        for video_id in video_ids:
-            process = multiprocessing.Process(target=_download_song, args=(video_id, PLAYLIST))
-            process.start()
-            processes.append(process)
-
-        for process in processes:
-            process.join()
+def _download_song_non_blocking(video_id):
+    process = multiprocessing.Process(target=_download_song_process, args=(video_id, PLAYLIST))
+    process.start()
 
 
-def _download_song(video_id, playlist):
+def _download_song_process(video_id, playlist):
     filename = None
 
     def _play_hook(d):

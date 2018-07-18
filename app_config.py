@@ -10,6 +10,7 @@ CHROMECAST_IP = {
     "hifi": ""
 }
 DEFAULT_LOCALE = "fr"
+PLAYLIST_GET_TIMEOUT = 240
 
 # purge Parameters
 AUDIO_CACHING_DAYS = 30

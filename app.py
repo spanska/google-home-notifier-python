@@ -88,7 +88,7 @@ def say(args):
 def play_song_from_youtube(args):
     playlist = youtube.find_and_download_song(args['query'])
     while not playlist.empty():
-        song = playlist.get()
+        song = playlist.get(timeout=app.config.get("PLAYLIST_GET_TIMEOUT"))
         song_url = "http://" + urlparse(request.url).netloc + "/static/cache/" + song.name
         logging.info("Playing %s", song_url)
         _play_audio(song_url, codec="audio/%s" % song.suffix[1:])
