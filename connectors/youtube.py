@@ -25,7 +25,7 @@ def find_and_download_song(search_query, follow_playlist=False):
         if follow_playlist:
             _download_song_non_blocking(result)
         else:
-            _download_song_process(result, PLAYLIST)
+            _download_song(result, PLAYLIST)
 
         return PLAYLIST
 
@@ -34,11 +34,11 @@ def find_and_download_song(search_query, follow_playlist=False):
 
 
 def _download_song_non_blocking(video_id):
-    process = multiprocessing.Process(target=_download_song_process, args=(video_id, PLAYLIST))
+    process = multiprocessing.Process(target=_download_song, args=(video_id, PLAYLIST))
     process.start()
 
 
-def _download_song_process(video_id, playlist):
+def _download_song(video_id, playlist):
     filename = None
 
     def _play_hook(d):
