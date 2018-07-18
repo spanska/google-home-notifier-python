@@ -86,7 +86,9 @@ def say(args):
 })
 @check_secret
 def play_song_from_youtube(args):
-    for song in youtube.find_and_download_song(args['query']):
+    playlist = youtube.find_and_download_song(args['query'])
+    while not playlist.empty():
+        song = playlist.get()
         song_url = "http://" + urlparse(request.url).netloc + "/static/cache/" + song.name
         logging.info("Playing %s", song_url)
         _play_audio(song_url, codec="audio/%s" % song.suffix[1:])
