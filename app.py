@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import asyncio
 import logging
 import os
 from functools import wraps, update_wrapper
@@ -86,16 +87,25 @@ def say(args):
 })
 @check_secret
 def play_song_from_youtube(args):
-    playlist = youtube.find_and_download_song(args['query'])
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    connector = youtube.YoutubeConnector()
+    playlist = connector.find_and_download_song(args['query'])
+
     song = playlist.get(timeout=app.config.get("PLAYLIST_GET_TIMEOUT"))
     song_url = "http://" + urlparse(request.url).netloc + "/static/cache/" + song.name
-    logging.info("Playing %s", song_url)
+
     _play_audio(song_url, codec="audio/%s" % song.suffix[1:])
+    loop.run_until_complete(connector.find_next_song_and_queue())
+
     while not playlist.empty():
         song = playlist.get(timeout=app.config.get("PLAYLIST_GET_TIMEOUT"))
         song_url = "http://" + urlparse(request.url).netloc + "/static/cache/" + song.name
-        logging.info("Playing %s", song_url)
+
         _play_audio(song_url, codec="audio/%s" % song.suffix[1:])
+        loop.run_until_complete(connector.find_next_song_and_queue())
+
     return {}, status.HTTP_204_NO_CONTENT
 
 
@@ -158,6 +168,7 @@ def _play_tts(text, lang=app.config.get("DEFAULT_LOCALE"), slow=False):
 
 def _play_audio(audio_url, codec='audio/mp3'):
     chromecast.wait()
+    logging.info("Playing %s", audio_url)
     chromecast.media_controller.play_media(audio_url, codec)
 
 
