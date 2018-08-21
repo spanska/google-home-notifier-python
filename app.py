@@ -96,7 +96,7 @@ def play_song_from_youtube(args):
     song = playlist.get(timeout=app.config.get("PLAYLIST_GET_TIMEOUT"))
     song_url = "http://" + urlparse(request.url).netloc + "/static/cache/" + song.name
 
-    loop.run_until_complete(asyncio.wait([
+    loop.run_until_complete(asyncio.gather(*[
         asyncio.ensure_future(_play_audio_async(song_url, codec="audio/%s" % song.suffix[1:])),
         asyncio.ensure_future(connector.find_next_song_and_queue())
     ]))
@@ -105,7 +105,7 @@ def play_song_from_youtube(args):
         song = playlist.get(timeout=app.config.get("PLAYLIST_GET_TIMEOUT"))
         song_url = "http://" + urlparse(request.url).netloc + "/static/cache/" + song.name
 
-        loop.run_until_complete(asyncio.wait([
+        loop.run_until_complete(asyncio.gather(*[
             asyncio.ensure_future(_play_audio_async(song_url, codec="audio/%s" % song.suffix[1:])),
             asyncio.ensure_future(connector.find_next_song_and_queue())
         ]))
@@ -177,7 +177,9 @@ def _play_audio(audio_url, codec='audio/mp3'):
 
 
 async def _play_audio_async(audio_url, codec='audio/mp3'):
+    chromecast.wait()
     logging.info("Playing %s", audio_url)
+    chromecast.media_controller.play_media(audio_url, codec)
 
 
 def _say_on_facebook_messenger(to, message):
