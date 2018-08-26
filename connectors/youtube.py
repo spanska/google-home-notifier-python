@@ -40,7 +40,7 @@ class YoutubeConnector:
         if next_video_id not in self.read_songs:
             await self._download_song(next_video_id, self.playlist)
         else:
-            raise Exception("song '%s' has already been listened" % video_id)
+            logging.info("song '%s' has already been listened. Stop downloading songs" % video_id)
 
     async def _find_next_song(self, video_id):
         r = self.session.get(
