@@ -2,7 +2,7 @@
 
 import asyncio
 import logging
-import multiprocessing
+import queue
 import re
 from pathlib import Path
 
@@ -15,7 +15,7 @@ class YoutubeConnector:
     USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/40.0"
 
     def __init__(self):
-        self.playlist = multiprocessing.Queue()
+        self.playlist = queue.Queue()
         self.read_songs = set()
         self.session = requests_html.HTMLSession()
 
