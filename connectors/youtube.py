@@ -10,6 +10,8 @@ import requests
 import requests_html
 import youtube_dl
 
+from .. import sync
+
 
 class YoutubeConnector:
     USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/40.0"
@@ -68,7 +70,7 @@ class YoutubeConnector:
             'progress_hooks': [_play_hook],
             "outtmpl": "./static/cache/%(title)s.%(ext)s"
         }) as ydl:
-            ydl.download(['http://www.youtube.com/watch?v=%s' % video_id])
+            await sync.sync_to_async(ydl.download)(['http://www.youtube.com/watch?v=%s' % video_id])
 
         self.read_songs.add(video_id)
         playlist.put(Path(filename))
