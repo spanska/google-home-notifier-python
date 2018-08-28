@@ -175,12 +175,10 @@ def _play_audio(audio_url, codec='audio/mp3'):
     chromecast.wait()
     logging.info("Playing %s", audio_url)
     chromecast.media_controller.play_media(audio_url, codec)
-    return "fini"
 
 
 async def _play_audio_async(audio_url, codec='audio/mp3'):
-    val = _play_audio(audio_url, codec)
-    print(str(val))
+    _play_audio(audio_url, codec))
 
 
 def _say_on_facebook_messenger(to, message):
