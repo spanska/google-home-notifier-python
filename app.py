@@ -22,6 +22,7 @@ from webargs.flaskparser import use_args
 
 import contact_finder
 import gh_state_machine
+import sync
 from connectors import facebook_messenger
 from connectors import youtube
 
@@ -177,9 +178,9 @@ def _play_audio(audio_url, codec='audio/mp3'):
 
 
 async def _play_audio_async(audio_url, codec='audio/mp3'):
-    chromecast.wait()
+    await sync.sync_to_async(chromecast.wait)
     logging.info("Playing %s", audio_url)
-    chromecast.media_controller.play_media(audio_url, codec)
+    await sync.sync_to_async(chromecast.media_controller.play_media)(audio_url, codec)
 
 
 def _say_on_facebook_messenger(to, message):
