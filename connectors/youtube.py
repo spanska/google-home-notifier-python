@@ -6,11 +6,10 @@ import queue
 import re
 from pathlib import Path
 
+import asgiref.sync
 import requests
 import requests_html
 import youtube_dl
-
-from .. import sync
 
 
 class YoutubeConnector:
@@ -70,7 +69,7 @@ class YoutubeConnector:
             'progress_hooks': [_play_hook],
             "outtmpl": "./static/cache/%(title)s.%(ext)s"
         }) as ydl:
-            await sync.sync_to_async(ydl.download)(['http://www.youtube.com/watch?v=%s' % video_id])
+            await asgiref.sync.sync_to_async(ydl.download)(['http://www.youtube.com/watch?v=%s' % video_id])
 
         self.read_songs.add(video_id)
         playlist.put(Path(filename))

@@ -19,10 +19,10 @@ from gtts import gTTS
 from slugify import slugify
 from webargs import fields
 from webargs.flaskparser import use_args
+import asgiref.sync
 
 import contact_finder
 import gh_state_machine
-import sync
 from connectors import facebook_messenger
 from connectors import youtube
 
@@ -175,12 +175,12 @@ def _play_audio(audio_url, codec='audio/mp3'):
     chromecast.wait()
     logging.info("Playing %s", audio_url)
     chromecast.media_controller.play_media(audio_url, codec)
+    return "fini"
 
 
 async def _play_audio_async(audio_url, codec='audio/mp3'):
-    await sync.sync_to_async(chromecast.wait)
-    logging.info("Playing %s", audio_url)
-    await sync.sync_to_async(chromecast.media_controller.play_media)(audio_url, codec)
+    val = _play_audio(audio_url, codec)
+    print(str(val))
 
 
 def _say_on_facebook_messenger(to, message):
