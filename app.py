@@ -178,7 +178,7 @@ def _play_audio(audio_url, codec='audio/mp3'):
 
 
 async def _play_audio_async(audio_url, codec='audio/mp3'):
-    _play_audio(audio_url, codec))
+    _play_audio(audio_url, codec)
 
 
 def _say_on_facebook_messenger(to, message):
