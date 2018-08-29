@@ -8,6 +8,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import arrow
+import asgiref.sync
 import pychromecast
 import requests
 import vobject
@@ -19,7 +20,6 @@ from gtts import gTTS
 from slugify import slugify
 from webargs import fields
 from webargs.flaskparser import use_args
-import asgiref.sync
 
 import contact_finder
 import gh_state_machine
@@ -175,10 +175,11 @@ def _play_audio(audio_url, codec='audio/mp3'):
     chromecast.wait()
     logging.info("Playing %s", audio_url)
     chromecast.media_controller.play_media(audio_url, codec)
+    chromecast.media_controller.block_until_active(timeout=600)
 
 
 async def _play_audio_async(audio_url, codec='audio/mp3'):
-    _play_audio(audio_url, codec)
+    asgiref.sync.sync_to_async(_play_audio)(audio_url, codec)
 
 
 def _say_on_facebook_messenger(to, message):
