@@ -8,7 +8,7 @@ unicode_slugify==0.1.3
 webargs==4.0.0
 arrow==0.12.1
 requests==2.19.1
-youtube-dl==2018.3.14
+youtube-dl==2018.09.18
 fbchat==1.3.9
 vobject==0.9.5
 pylev3==1.1.0
