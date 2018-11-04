@@ -224,4 +224,4 @@ if __name__ == '__main__':
         "messenger": {"method": _say_on_facebook_messenger, "dialog": app.config.get("MESSENGER_DIALOG")},
         "sms": {"method": _send_sms, "dialog": app.config.get("SMS_DIALOG")}
     }, _play_tts)
-    app.run(host='0.0.0.0', port=8080, debug=app.config.get("DEBUG"), use_reloader=False)
+    app.run(host='0.0.0.0', port=1234, debug=app.config.get("DEBUG"), use_reloader=False)

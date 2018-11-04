@@ -60,7 +60,7 @@ I use docker to run it. It works pretty well.
 run with:
 ```bash
 docker build -t google-home-apis:latest .
-docker run --restart=always -d -p 8080:8080 google-home-apis
+docker run --restart=always -d -p 1234:1234 google-home-apis
 ```
 
 # How
